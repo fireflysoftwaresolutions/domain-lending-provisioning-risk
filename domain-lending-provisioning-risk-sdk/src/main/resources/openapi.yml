@@ -1,0 +1,293 @@
+openapi: 3.0.1
+info:
+  title: Domain Lending Provisioning Risk API
+  description: "Orchestrates provisioning cases through core-lending-provisioning-risk.\
+    \ It creates, updates, changes status, and closes provisioning cases through the\
+    \ provisioning core. Party, contract, and product identifiers stay UUIDs."
+  contact:
+    name: Firefly Software Foundation
+    email: dev@fireflysoftware.io
+  version: 1.0.0
+servers:
+- url: https://openplatform.fireflysoftware.io/domain-lending-provisioning-risk
+  description: Development Environment
+- url: /
+  description: Local Development Environment
+tags:
+- name: ProvisioningCases
+  description: Domain orchestration for provisioning cases
+paths:
+  /api/v1/provisioning-cases/{provisioningCaseId}/status:
+    put:
+      tags:
+      - ProvisioningCases
+      summary: Update status
+      description: Runs the status saga against core-lending-provisioning-risk.
+      operationId: updateStatus
+      parameters:
+      - name: provisioningCaseId
+        in: path
+        description: Core identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusChangeRequest"
+        required: true
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisioningCaseDTO"
+        "404":
+          description: Not found
+  /api/v1/provisioning-cases/{provisioningCaseId}:
+    get:
+      tags:
+      - ProvisioningCases
+      summary: Get provisioning case
+      description: Reads one record from core-lending-provisioning-risk.
+      operationId: get
+      parameters:
+      - name: provisioningCaseId
+        in: path
+        description: Core identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisioningCaseDTO"
+        "404":
+          description: Not found
+    put:
+      tags:
+      - ProvisioningCases
+      summary: Update provisioning case
+      description: Runs the update saga against core-lending-provisioning-risk. Status
+        is left unchanged.
+      operationId: update
+      parameters:
+      - name: provisioningCaseId
+        in: path
+        description: Core identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProvisioningCaseDTO"
+        required: true
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisioningCaseDTO"
+        "404":
+          description: Not found
+    delete:
+      tags:
+      - ProvisioningCases
+      summary: Remove provisioning case
+      description: Deletes the record through core-lending-provisioning-risk when
+        that core allows removal.
+      operationId: remove
+      parameters:
+      - name: provisioningCaseId
+        in: path
+        description: Core identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Removed
+        "404":
+          description: Not found
+  /api/v1/provisioning-cases/{provisioningCaseId}/close:
+    post:
+      tags:
+      - ProvisioningCases
+      summary: Close provisioning case
+      description: Closes a provisioning case by writing RELEASED when the provisioning
+        core allows that status.
+      operationId: close
+      parameters:
+      - name: provisioningCaseId
+        in: path
+        description: Core identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReasonRequest"
+        required: true
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisioningCaseDTO"
+        "404":
+          description: Not found
+  /api/v1/provisioning-cases:
+    post:
+      tags:
+      - ProvisioningCases
+      summary: Create provisioning case
+      description: Runs the register saga against core-lending-provisioning-risk.
+      operationId: create
+      parameters:
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProvisioningCaseDTO"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvisioningCaseDTO"
+        "400":
+          description: Invalid request
+components:
+  schemas:
+    StatusChangeRequest:
+      type: object
+      properties:
+        status:
+          type: string
+        statusReason:
+          type: string
+    ProvisioningCaseDTO:
+      required:
+      - loanServicingCaseId
+      - provisioningStatus
+      - riskGrade
+      - stageCode
+      type: object
+      properties:
+        provisioningCaseId:
+          type: string
+          format: uuid
+          nullable: true
+        loanServicingCaseId:
+          type: string
+          format: uuid
+        stageCode:
+          type: string
+          enum:
+          - STAGE_1
+          - STAGE_2
+          - STAGE_3
+          - POCI
+        eclAmount:
+          type: number
+          nullable: true
+        riskGrade:
+          type: string
+          enum:
+          - AAA
+          - AA
+          - A
+          - BBB
+          - BB
+          - B
+          - CCC
+          - CC
+          - C
+          - D
+        lastCalculatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        provisioningStatus:
+          type: string
+          enum:
+          - ACTIVE
+          - RELEASED
+          - WRITTEN_OFF
+          - RECOVERED
+        remarks:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+    ReasonRequest:
+      type: object
+      properties:
+        statusReason:
+          type: string

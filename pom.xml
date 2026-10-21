@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.fireflysoftware</groupId>
+        <artifactId>firefly-parent</artifactId>
+        <version>26.10.3</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>domain-lending-provisioning-risk</artifactId>
+    <name>domain-lending-provisioning-risk</name>
+    <version>26.10.3</version>
+    <packaging>pom</packaging>
+    <description>Orchestrates provisioning case create, update, status, and close commands through the provisioning core. Developed by the Firefly Software Foundation.</description>
+    <url>https://openplatform.fireflysoftware.io/domain-lending-provisioning-risk</url>
+
+    <modules>
+        <module>domain-lending-provisioning-risk-core</module>
+        <module>domain-lending-provisioning-risk-interfaces</module>
+        <module>domain-lending-provisioning-risk-web</module>
+        <module>domain-lending-provisioning-risk-sdk</module>
+        <module>domain-lending-provisioning-risk-infra</module>
+    </modules>
+
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>core-lending-provisioning-risk-sdk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>domain-lending-provisioning-risk-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>domain-lending-provisioning-risk-interfaces</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>domain-lending-provisioning-risk-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>domain-lending-provisioning-risk-sdk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fireflysoftware</groupId>
+                <artifactId>domain-lending-provisioning-risk-infra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
