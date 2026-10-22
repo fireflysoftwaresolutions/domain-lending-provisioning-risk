@@ -7,13 +7,13 @@
     <parent>
         <groupId>io.fireflysoftware</groupId>
         <artifactId>firefly-parent</artifactId>
-        <version>26.10.5</version>
+        <version>26.10.6</version>
         <relativePath/>
     </parent>
 
     <artifactId>domain-lending-provisioning-risk</artifactId>
     <name>domain-lending-provisioning-risk</name>
-    <version>26.10.5</version>
+    <version>26.10.6</version>
     <packaging>pom</packaging>
     <description>Orchestrates provisioning case create, update, status, and close commands through the provisioning core. Developed by the Firefly Software Foundation.</description>
     <url>https://openplatform.fireflysoftware.io/domain-lending-provisioning-risk</url>
